@@ -2,6 +2,8 @@
 # Claude Code status line
 # Displays token usage, model, cost, and plan limits in the terminal status bar.
 
+export LC_NUMERIC=C
+
 input=$(cat)
 
 # ─── Fetch plan usage (session and weekly) ────────────────────────────────────
@@ -72,20 +74,70 @@ fmt() {
 ctx_int=$(printf "%.0f" "$used_pct")
 cost_fmt=$(printf "%.2f" "$cost")
 
-# ─── Colored output ───────────────────────────────────────────────────────────
-model_colored=$(printf "\033[0;33m%s\033[0m" "$model")
-input_colored=$(printf "\033[0;31mInput: %s\033[0m" "$(fmt $total_in)")
-output_colored=$(printf "\033[0;32mOutput: %s\033[0m" "$(fmt $total_out)")
-total_colored=$(printf "\033[0;34mTotal: %s\033[0m" "$(fmt $total_tokens)")
-ctx_colored=$(printf "\033[38;5;208mCTX: %s (%s%%)\033[0m" "$(fmt $ctx_tokens)" "$ctx_int")
-cost_colored=$(printf "\033[0;37mCost: \$%s\033[0m" "$cost_fmt")
-line="${model_colored} | ${input_colored} | ${output_colored} | ${total_colored} | ${ctx_colored} | ${cost_colored}"
+# ─── Build segments (colored + plain text for measuring) ─────────────────────
+seg_count=0
+add_seg() {
+  seg_colored[$seg_count]="$1"
+  seg_plain[$seg_count]="$2"
+  seg_count=$((seg_count + 1))
+}
 
-if [ -n "$session_str" ]; then
-  line="${line} | $(printf "\033[0;36m%s\033[0m" "$session_str")"
-fi
-if [ -n "$weekly_str" ]; then
-  line="${line} | $(printf "\033[0;35m%s\033[0m" "$weekly_str")"
-fi
+add_seg "$(printf "\033[0;33m%s\033[0m" "$model")" "$model"
+add_seg "$(printf "\033[0;31mInput: %s\033[0m" "$(fmt $total_in)")" "Input: $(fmt $total_in)"
+add_seg "$(printf "\033[0;32mOutput: %s\033[0m" "$(fmt $total_out)")" "Output: $(fmt $total_out)"
+add_seg "$(printf "\033[0;34mTotal: %s\033[0m" "$(fmt $total_tokens)")" "Total: $(fmt $total_tokens)"
+add_seg "$(printf "\033[38;5;208mCTX: %s (%s%%)\033[0m" "$(fmt $ctx_tokens)" "$ctx_int")" "CTX: $(fmt $ctx_tokens) (${ctx_int}%)"
+add_seg "$(printf "\033[0;37mCost: \$%s\033[0m" "$cost_fmt")" "Cost: \$${cost_fmt}"
+[ -n "$session_str" ] && add_seg "$(printf "\033[0;36m%s\033[0m" "$session_str")" "$session_str"
+[ -n "$weekly_str" ] && add_seg "$(printf "\033[0;35m%s\033[0m" "$weekly_str")" "$weekly_str"
 
-printf "%s" "$line"
+# ─── Detect terminal width ───────────────────────────────────────────────────
+term_width=${COLUMNS:-0}
+[ "$term_width" -eq 0 ] 2>/dev/null && term_width=$(stty size </dev/tty 2>/dev/null | awk '{print $2}')
+[ -z "$term_width" ] || [ "$term_width" -eq 0 ] 2>/dev/null && term_width=$(tput cols </dev/tty 2>/dev/null)
+[ -z "$term_width" ] || [ "$term_width" -eq 0 ] 2>/dev/null && term_width=200
+# Claude Code UI has padding — subtract margin so we wrap before it truncates
+term_width=$((term_width - 6))
+
+# ─── Greedy line wrapping: fit as many segments as possible per line ──────────
+sep=" | "
+sep_len=3
+output=""
+line=""
+line_len=0
+first_on_line=true
+
+for i in $(seq 0 $((seg_count - 1))); do
+  plain="${seg_plain[$i]}"
+  colored="${seg_colored[$i]}"
+  seg_len=${#plain}
+
+  if $first_on_line; then
+    needed=$seg_len
+  else
+    needed=$((seg_len + sep_len))
+  fi
+
+  if ! $first_on_line && [ $((line_len + needed)) -gt "$term_width" ]; then
+    # Current segment doesn't fit — start a new line
+    [ -n "$output" ] && output="${output}\n"
+    output="${output}${line}"
+    line="$colored"
+    line_len=$seg_len
+    first_on_line=false
+  else
+    if $first_on_line; then
+      line="$colored"
+      line_len=$seg_len
+      first_on_line=false
+    else
+      line="${line}${sep}${colored}"
+      line_len=$((line_len + needed))
+    fi
+  fi
+done
+
+# Flush last line
+[ -n "$line" ] && { [ -n "$output" ] && output="${output}\n${line}" || output="$line"; }
+
+printf "%b" "$output"
