@@ -96,6 +96,20 @@ Claude Code supports a `statusLine` setting in `~/.claude/settings.json` that ru
 
 ---
 
+## Contributing
+
+Contributions are welcome! Please read [CONTRIBUTING.md](.github/CONTRIBUTING.md) before opening a PR.
+
+**Branch flow:**
+```
+feature/* → develop → main
+```
+
+- Open PRs against `develop`, not `main`
+- Use [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, etc.) — versioning is automatic
+
+---
+
 ## License
 
 MIT
