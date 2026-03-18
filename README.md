@@ -90,7 +90,9 @@ If you use Claude Code only with an API key (no `claude login`), the session and
 
 Claude Code supports a `statusLine` setting in `~/.claude/settings.json` that runs a shell command on each update and displays its output at the bottom of the terminal.
 
-`statusline.sh` reads the JSON piped by Claude Code (model, tokens, context, cost) and calls `fetch-usage.sh` to get plan usage from the Anthropic OAuth API. Results are cached for 60 seconds to avoid excessive API calls.
+`statusline.sh` reads the JSON piped by Claude Code (model, tokens, context, cost) and calls `fetch-usage.sh` to get plan usage from the Anthropic OAuth API.
+
+**Session** and **Weekly** data is cached in `/tmp/claude-usage-cache.json` for 60 seconds. This means the Anthropic API is called at most once per minute, regardless of how frequently the status line updates — avoiding rate limits and unnecessary requests.
 
 ---
 
