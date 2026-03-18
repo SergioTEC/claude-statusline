@@ -1,0 +1,9 @@
+{
+  "name": "claude-status",
+  "version": "1.0.0",
+  "description": "Real-time token usage for Claude Code — always visible in the status bar",
+  "scripts": {
+    "install-status": "node install.js",
+    "uninstall-status": "node uninstall.js"
+  }
+}

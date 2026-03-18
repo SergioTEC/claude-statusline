@@ -1,0 +1,8 @@
+# Local Claude Code settings (machine-specific, contains absolute paths)
+.claude/settings.local.json
+
+# Node
+node_modules/
+
+# macOS
+.DS_Store
