@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * claude-status installer
+ * claude-statusline installer
  * Installs the custom status line into Claude Code globally.
  * To undo: node uninstall.js
  */
@@ -11,7 +11,7 @@ const os = require('os');
 
 const CLAUDE_DIR = path.join(os.homedir(), '.claude');
 const SETTINGS_FILE = path.join(CLAUDE_DIR, 'settings.json');
-const SETTINGS_BACKUP = path.join(CLAUDE_DIR, 'settings.json.claude-status-backup');
+const SETTINGS_BACKUP = path.join(CLAUDE_DIR, 'settings.json.claude-statusline-backup');
 const SCRIPT_DEST = path.join(CLAUDE_DIR, 'statusline.sh');
 const SCRIPT_SRC = path.join(__dirname, '.claude', 'statusline.sh');
 const FETCH_DEST = path.join(CLAUDE_DIR, 'fetch-usage.sh');
@@ -24,7 +24,7 @@ if (!fs.existsSync(CLAUDE_DIR)) {
 
 // ─── Check if already installed ──────────────────────────────────────────────
 if (fs.existsSync(SETTINGS_BACKUP)) {
-  console.log('⚠️   claude-status is already installed.');
+  console.log('⚠️   claude-statusline is already installed.');
   console.log('    Run  node uninstall.js  to remove it before reinstalling.');
   process.exit(1);
 }

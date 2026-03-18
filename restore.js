@@ -25,7 +25,7 @@ function findExtension() {
 }
 
 const webviewPath = findExtension();
-const backupPath = webviewPath + '.claude-status-backup';
+const backupPath = webviewPath + '.claude-statusline-backup';
 
 if (!fs.existsSync(backupPath)) {
   console.log('ℹ️   No backup found — extension is not patched.');

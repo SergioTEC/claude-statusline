@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * claude-status uninstaller
+ * claude-statusline uninstaller
  * Removes the status line and restores the original settings.json.
  */
 
@@ -10,13 +10,13 @@ const os = require('os');
 
 const CLAUDE_DIR = path.join(os.homedir(), '.claude');
 const SETTINGS_FILE = path.join(CLAUDE_DIR, 'settings.json');
-const SETTINGS_BACKUP = path.join(CLAUDE_DIR, 'settings.json.claude-status-backup');
+const SETTINGS_BACKUP = path.join(CLAUDE_DIR, 'settings.json.claude-statusline-backup');
 const SCRIPT_DEST = path.join(CLAUDE_DIR, 'statusline.sh');
 const FETCH_DEST = path.join(CLAUDE_DIR, 'fetch-usage.sh');
 
 // ─── Check if installed ───────────────────────────────────────────────────────
 if (!fs.existsSync(SETTINGS_BACKUP)) {
-  console.log('ℹ️   claude-status is not installed (no backup found).');
+  console.log('ℹ️   claude-statusline is not installed (no backup found).');
   process.exit(0);
 }
 

@@ -1,4 +1,4 @@
-# claude-status
+# claude-statusline
 
 > Real-time status line for Claude Code showing token usage, model, cost, and plan limits — always visible at the bottom of your terminal.
 
@@ -42,8 +42,8 @@ claude-sonnet-4-6 | Input: 125.8k | Output: 25.0k | Total: 150.8k | CTX: 125.8k 
 ## Installation
 
 ```bash
-git clone https://github.com/your-username/claude-status.git
-cd claude-status
+git clone https://github.com/SergioTEC/claude-statusline.git
+cd claude-statusline
 node install.js
 ```
 

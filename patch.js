@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * claude-status patcher
+ * claude-statusline patcher
  * Patches the Claude Code VS Code extension to always show
  * token usage in the chat with detailed information.
  */
@@ -71,7 +71,7 @@ const PATCHES = [
 
 // ─── Apply patch ─────────────────────────────────────────────────────────────
 function applyPatch(filePath) {
-  const backupPath = filePath + '.claude-status-backup';
+  const backupPath = filePath + '.claude-statusline-backup';
 
   if (fs.existsSync(backupPath)) {
     console.log('⚠️   Backup already exists — extension may already be patched.');
