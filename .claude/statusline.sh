@@ -2,6 +2,8 @@
 # Claude Code status line
 # Displays token usage, model, cost, and plan limits in the terminal status bar.
 
+export LC_NUMERIC=C
+
 input=$(cat)
 
 # ─── Fetch plan usage (session and weekly) ────────────────────────────────────
