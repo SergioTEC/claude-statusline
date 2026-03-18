@@ -10,9 +10,13 @@
 
 ## What it shows
 
+![Statusline preview](https://github.com/user-attachments/assets/5216fa89-817b-471e-bcad-ffa2914a938e)
+
+<!--
 ```
 claude-sonnet-4-6 | Input: 125.8k | Output: 25.0k | Total: 150.8k | CTX: 125.8k (24%) | Cost: $1.30 | Session: 34% · 7min | Weekly: 52% · 2d12h
 ```
+-->
 
 | Field | Color | Description |
 |---|---|---|
