@@ -58,7 +58,12 @@ total_in=$(echo "$input" | jq -r '.context_window.total_input_tokens // 0')
 total_out=$(echo "$input" | jq -r '.context_window.total_output_tokens // 0')
 total_tokens=$((total_in + total_out))
 used_pct=$(echo "$input" | jq -r '.context_window.used_percentage // 0')
-ctx_tokens=$total_in
+ctx_tokens=$(echo "$input" | jq -r '
+  (.context_window.current_usage.input_tokens // 0) +
+  (.context_window.current_usage.output_tokens // 0) +
+  (.context_window.current_usage.cache_creation_input_tokens // 0) +
+  (.context_window.current_usage.cache_read_input_tokens // 0)
+' 2>/dev/null)
 cost=$(echo "$input" | jq -r '.cost.total_cost_usd // 0')
 
 # Format numbers with k/M suffixes
