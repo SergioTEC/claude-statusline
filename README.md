@@ -24,7 +24,7 @@ claude-sonnet-4-6 | Input: 125.8k | Output: 25.0k | Total: 150.8k | CTX: 125.8k 
 | Input | 🔴 Red | Input tokens sent this session |
 | Output | 🟢 Green | Output tokens generated |
 | Total | 🔵 Blue | Combined input + output tokens |
-| CTX | 🟠 Orange | Input tokens in context + % of the model's context window used (approaches 100% → auto-compact) |
+| CTX | 🟠 Orange | Total tokens in current context (input + output + cache) + % of the model's context window used (approaches 100% → Claude Code auto-compacts) |
 | Cost | ⚪ White | Estimated session cost in USD |
 | Session | 🔵 Cyan | 5-hour rate limit usage + time until reset |
 | Weekly | 🟣 Magenta | 7-day rate limit usage + time until reset |

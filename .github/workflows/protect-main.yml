@@ -12,9 +12,9 @@ jobs:
       - name: Block merge if not from develop
         if: github.head_ref != 'develop'
         run: |
-          echo "PRs para main só são permitidos a partir da branch develop."
-          echo "Branch de origem: ${{ github.head_ref }}"
+          echo "PRs to main are only allowed from the develop branch."
+          echo "Source branch: ${{ github.head_ref }}"
           exit 1
 
       - name: OK
-        run: echo "Branch de origem válida: develop"
+        run: echo "Valid source branch: develop"

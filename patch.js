@@ -42,7 +42,7 @@ const PATCHES = [
   {
     name: 'Tooltip with exact token counts',
     find: '`${Math.round(U)}% context used — click to compact`',
-    replace: '`${Math.round(U)}% usado — ${_fmtTok($)}/${_fmtTok(Z)} tokens`',
+    replace: '`${Math.round(U)}% used — ${_fmtTok($)}/${_fmtTok(Z)} tokens`',
   },
   {
     name: 'Popup with exact token counts and progress bar',
