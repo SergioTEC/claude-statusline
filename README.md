@@ -33,6 +33,22 @@ claude-sonnet-4-6 | Input: 125.8k | Output: 25.0k | Total: 150.8k | CTX: 125.8k 
 
 ---
 
+## Install
+
+```bash
+npx claudecode-statusline
+```
+
+That's it. No cloning, no dependencies to install manually.
+
+To uninstall:
+
+```bash
+npx claudecode-statusline uninstall
+```
+
+---
+
 ## Requirements
 
 - [Claude Code](https://claude.ai/code) CLI installed and logged in
@@ -43,7 +59,9 @@ claude-sonnet-4-6 | Input: 125.8k | Output: 25.0k | Total: 150.8k | CTX: 125.8k 
 
 ---
 
-## Installation
+## Manual installation (alternative)
+
+If you prefer cloning the repo:
 
 ```bash
 git clone https://github.com/SergioTEC/claude-statusline.git
@@ -51,22 +69,11 @@ cd claude-statusline
 node install.js
 ```
 
-The installer:
-1. Copies `statusline.sh` and `fetch-usage.sh` to `~/.claude/`
-2. Backs up your existing `~/.claude/settings.json`
-3. Injects the `statusLine` config globally
-
-Open any project in Claude Code — the status line appears automatically.
-
----
-
-## Uninstall
+To uninstall manually:
 
 ```bash
 node uninstall.js
 ```
-
-Removes both scripts and restores your original `settings.json`.
 
 ---
 
