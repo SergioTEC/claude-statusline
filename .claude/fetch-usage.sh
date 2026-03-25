@@ -1,11 +1,23 @@
 #!/usr/bin/env bash
-# Fetches Claude.ai plan usage with 60-second cache.
+# Fetches Claude.ai plan usage with 180-second cache and 300-second backoff on 429.
 # Reads OAuth credentials automatically from:
 #   macOS  → Keychain ("Claude Code-credentials")
 #   Linux  → ~/.claude/.credentials.json
 
 CACHE=/tmp/claude-usage-cache.json
-CACHE_MAX_AGE=60
+BACKOFF=/tmp/claude-usage-backoff
+CACHE_MAX_AGE=180
+BACKOFF_AGE=300
+
+# If in backoff period (recent 429), return cache without hitting API
+if [ -f "$BACKOFF" ]; then
+  backoff_age=$(( $(date +%s) - $(stat -f %m "$BACKOFF" 2>/dev/null || stat -c %Y "$BACKOFF" 2>/dev/null) ))
+  if [ "$backoff_age" -lt "$BACKOFF_AGE" ]; then
+    if [ -f "$CACHE" ]; then cat "$CACHE"; else echo '{"five_hour":null,"seven_day":null}'; fi
+    exit 0
+  fi
+  rm -f "$BACKOFF"
+fi
 
 # Return cached data if still fresh
 if [ -f "$CACHE" ]; then
@@ -51,6 +63,9 @@ result=$(curl -s --max-time 5 \
 if echo "$result" | jq -e '.five_hour' > /dev/null 2>&1; then
   echo "$result" | jq '{five_hour: .five_hour, seven_day: .seven_day}' > "$CACHE"
   cat "$CACHE"
+elif echo "$result" | jq -e '.error.type == "rate_limit_error"' > /dev/null 2>&1; then
+  touch "$BACKOFF"
+  if [ -f "$CACHE" ]; then cat "$CACHE"; else echo '{"five_hour":null,"seven_day":null}'; fi
 else
   if [ -f "$CACHE" ]; then cat "$CACHE"; else echo '{"five_hour":null,"seven_day":null}'; fi
 fi
