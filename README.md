@@ -36,7 +36,7 @@ claude-sonnet-4-6 | Input: 125.8k | Output: 25.0k | Total: 150.8k | CTX: 125.8k 
 ## Install
 
 ```bash
-npx claudecode-statusline
+npx @sergiojr/claude-statusline
 ```
 
 That's it. No cloning, no dependencies to install manually.
@@ -44,7 +44,7 @@ That's it. No cloning, no dependencies to install manually.
 To uninstall:
 
 ```bash
-npx claudecode-statusline uninstall
+npx @sergiojr/claude-statusline uninstall
 ```
 
 ---
@@ -103,7 +103,7 @@ Claude Code supports a `statusLine` setting in `~/.claude/settings.json` that ru
 
 `statusline.sh` reads the JSON piped by Claude Code (model, tokens, context, cost) and calls `fetch-usage.sh` to get plan usage from the Anthropic OAuth API.
 
-**Session** and **Weekly** data is cached in `/tmp/claude-usage-cache.json` for 60 seconds. This means the Anthropic API is called at most once per minute, regardless of how frequently the status line updates — avoiding rate limits and unnecessary requests.
+**Session** and **Weekly** data is cached in `/tmp/claude-usage-cache.json` for 180 seconds. On a 429 rate-limit response, the script backs off for 300 seconds before retrying — avoiding repeated blocked requests.
 
 ---
 

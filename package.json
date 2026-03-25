@@ -1,6 +1,6 @@
 {
-  "name": "claudecode-statusline",
-  "version": "1.0.0",
+  "name": "@sergiojr/claude-statusline",
+  "version": "1.0.1",
   "description": "Real-time token usage for Claude Code — always visible in the status bar",
   "keywords": [
     "claude",
