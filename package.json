@@ -13,13 +13,13 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/SergioTEC/claude-statusline.git"
+    "url": "git+https://github.com/SergioTEC/claude-statusline.git"
   },
   "engines": {
     "node": ">=14"
   },
   "bin": {
-    "claudecode-statusline": "./bin/cli.js"
+    "claudecode-statusline": "bin/cli.js"
   },
   "files": [
     "bin/",
