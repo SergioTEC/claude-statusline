@@ -49,6 +49,54 @@ npx @sergiojr/claude-statusline uninstall
 
 ---
 
+## Customize
+
+Run the interactive configurator to change which fields are shown, their order, and colors:
+
+```bash
+npx @sergiojr/claude-statusline configure
+```
+
+```
+claude-statusline — Configure
+
+  › [✓] Model      ‹ yellow  ›        ← selected: ←→ cycles color
+    [✓] Input      ● red
+    [✓] Output     ● green
+    [✓] Total      ● blue
+    [✓] CTX        ● orange
+    [✓] Cost       ● white
+    [✓] Session    ● cyan
+    [✓] Weekly     ● magenta
+
+  ↑↓ navigate   ←→ color   Space toggle   M move   S save   Q quit
+```
+
+| Key | Action |
+|---|---|
+| `↑` / `↓` | Navigate between fields |
+| `←` / `→` | Cycle color of selected field |
+| `Space` | Show / hide field |
+| `M` | Enter move mode — `↑↓` repositions, `Enter` or `M` drops |
+| `S` | Save and exit |
+| `Q` / `Esc` | Exit without saving |
+
+Available colors:
+
+| Standard | Bright | Extra |
+|---|---|---|
+| `red` | `bright_red` | `orange` |
+| `green` | `bright_green` | `pink` |
+| `yellow` | `bright_yellow` | `purple` |
+| `blue` | `bright_blue` | `gray` |
+| `magenta` | `bright_magenta` | |
+| `cyan` | `bright_cyan` | |
+| `white` | `bright_white` | |
+
+Settings are saved to `~/.claude/statusline-config.json` and take effect immediately — no reinstall needed.
+
+---
+
 ## Requirements
 
 - [Claude Code](https://claude.ai/code) CLI installed and logged in

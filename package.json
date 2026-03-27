@@ -27,7 +27,8 @@
     ".claude/fetch-usage.sh",
     "install.js",
     "uninstall.js",
-    "restore.js"
+    "restore.js",
+    "configure.js"
   ],
   "scripts": {
     "install-status": "node install.js",

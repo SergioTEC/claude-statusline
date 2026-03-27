@@ -79,6 +79,57 @@ fmt() {
 ctx_int=$(printf "%.0f" "$used_pct")
 cost_fmt=$(printf "%.2f" "$cost")
 
+# ─── Load user config ─────────────────────────────────────────────────────────
+CONFIG="${HOME}/.claude/statusline-config.json"
+FIELD_ORDER="model input output total ctx cost session weekly"
+c_model="yellow"; c_input="red"; c_output="green"; c_total="blue"
+c_ctx="orange"; c_cost="white"; c_session="cyan"; c_weekly="magenta"
+
+if [ -f "$CONFIG" ]; then
+  _fo=$(jq -r '(.fields // []) | join(" ")' "$CONFIG" 2>/dev/null)
+  [ -n "$_fo" ] && FIELD_ORDER="$_fo"
+
+  _colors=$(jq -r '[
+    (.colors.model   // "yellow"),
+    (.colors.input   // "red"),
+    (.colors.output  // "green"),
+    (.colors.total   // "blue"),
+    (.colors.ctx     // "orange"),
+    (.colors.cost    // "white"),
+    (.colors.session // "cyan"),
+    (.colors.weekly  // "magenta")
+  ] | join("|")' "$CONFIG" 2>/dev/null)
+
+  if [ -n "$_colors" ]; then
+    IFS='|' read -r c_model c_input c_output c_total c_ctx c_cost c_session c_weekly <<< "$_colors"
+  fi
+fi
+
+# Map color name to ANSI escape sequence
+color_ansi() {
+  case "$1" in
+    red)            printf "\033[0;31m" ;;
+    green)          printf "\033[0;32m" ;;
+    yellow)         printf "\033[0;33m" ;;
+    blue)           printf "\033[0;34m" ;;
+    magenta)        printf "\033[0;35m" ;;
+    cyan)           printf "\033[0;36m" ;;
+    white)          printf "\033[0;37m" ;;
+    bright_red)     printf "\033[0;91m" ;;
+    bright_green)   printf "\033[0;92m" ;;
+    bright_yellow)  printf "\033[0;93m" ;;
+    bright_blue)    printf "\033[0;94m" ;;
+    bright_magenta) printf "\033[0;95m" ;;
+    bright_cyan)    printf "\033[0;96m" ;;
+    bright_white)   printf "\033[0;97m" ;;
+    orange)         printf "\033[38;5;208m" ;;
+    pink)           printf "\033[38;5;213m" ;;
+    purple)         printf "\033[38;5;129m" ;;
+    gray)           printf "\033[0;90m" ;;
+    *)              printf "\033[0m" ;;
+  esac
+}
+
 # ─── Build segments (colored + plain text for measuring) ─────────────────────
 seg_count=0
 add_seg() {
@@ -87,14 +138,46 @@ add_seg() {
   seg_count=$((seg_count + 1))
 }
 
-add_seg "$(printf "\033[0;33m%s\033[0m" "$model")" "$model"
-add_seg "$(printf "\033[0;31mInput: %s\033[0m" "$(fmt $total_in)")" "Input: $(fmt $total_in)"
-add_seg "$(printf "\033[0;32mOutput: %s\033[0m" "$(fmt $total_out)")" "Output: $(fmt $total_out)"
-add_seg "$(printf "\033[0;34mTotal: %s\033[0m" "$(fmt $total_tokens)")" "Total: $(fmt $total_tokens)"
-add_seg "$(printf "\033[38;5;208mCTX: %s (%s%%)\033[0m" "$(fmt $ctx_tokens)" "$ctx_int")" "CTX: $(fmt $ctx_tokens) (${ctx_int}%)"
-add_seg "$(printf "\033[0;37mCost: \$%s\033[0m" "$cost_fmt")" "Cost: \$${cost_fmt}"
-[ -n "$session_str" ] && add_seg "$(printf "\033[0;36m%s\033[0m" "$session_str")" "$session_str"
-[ -n "$weekly_str" ] && add_seg "$(printf "\033[0;35m%s\033[0m" "$weekly_str")" "$weekly_str"
+for _field in $FIELD_ORDER; do
+  case "$_field" in
+    model)
+      _a=$(color_ansi "$c_model")
+      add_seg "$(printf "%s%s\033[0m" "$_a" "$model")" "$model"
+      ;;
+    input)
+      _a=$(color_ansi "$c_input")
+      add_seg "$(printf "%sInput: %s\033[0m" "$_a" "$(fmt $total_in)")" "Input: $(fmt $total_in)"
+      ;;
+    output)
+      _a=$(color_ansi "$c_output")
+      add_seg "$(printf "%sOutput: %s\033[0m" "$_a" "$(fmt $total_out)")" "Output: $(fmt $total_out)"
+      ;;
+    total)
+      _a=$(color_ansi "$c_total")
+      add_seg "$(printf "%sTotal: %s\033[0m" "$_a" "$(fmt $total_tokens)")" "Total: $(fmt $total_tokens)"
+      ;;
+    ctx)
+      _a=$(color_ansi "$c_ctx")
+      add_seg "$(printf "%sCTX: %s (%s%%)\033[0m" "$_a" "$(fmt $ctx_tokens)" "$ctx_int")" "CTX: $(fmt $ctx_tokens) (${ctx_int}%)"
+      ;;
+    cost)
+      _a=$(color_ansi "$c_cost")
+      add_seg "$(printf "%sCost: \$%s\033[0m" "$_a" "$cost_fmt")" "Cost: \$${cost_fmt}"
+      ;;
+    session)
+      if [ -n "$session_str" ]; then
+        _a=$(color_ansi "$c_session")
+        add_seg "$(printf "%s%s\033[0m" "$_a" "$session_str")" "$session_str"
+      fi
+      ;;
+    weekly)
+      if [ -n "$weekly_str" ]; then
+        _a=$(color_ansi "$c_weekly")
+        add_seg "$(printf "%s%s\033[0m" "$_a" "$weekly_str")" "$weekly_str"
+      fi
+      ;;
+  esac
+done
 
 # ─── Detect terminal width ───────────────────────────────────────────────────
 term_width=${COLUMNS:-0}
