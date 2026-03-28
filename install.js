@@ -56,7 +56,7 @@ if (fs.existsSync(SETTINGS_FILE)) {
 // ─── Inject statusLine ───────────────────────────────────────────────────────
 settings.statusLine = {
   type: 'command',
-  command: `bash ${SCRIPT_DEST}`
+  command: 'bash ~/.claude/statusline.sh'
 };
 
 fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2), 'utf8');
