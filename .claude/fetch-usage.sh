@@ -42,7 +42,8 @@ if [ -z "$creds" ]; then
   exit 0
 fi
 
-access_token=$(echo "$creds" | python3 -c "
+PYTHON=$(command -v python3 2>/dev/null || command -v python 2>/dev/null || command -v py 2>/dev/null)
+access_token=$(echo "$creds" | "$PYTHON" -c "
 import sys, json
 d = json.load(sys.stdin)
 print(d.get('claudeAiOauth', {}).get('accessToken', ''))
